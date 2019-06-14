@@ -44,7 +44,16 @@ class MenuItem(Base):
 
     restaurant = relationship(Restaurant)
 
-
+    @property
+    def serialize(self):
+        #Set up refs for JSON api interaction
+        return {
+            'name'          : self.name,
+            'description'   : self.description,
+            'id'            : self.id,
+            'price'         : self.price,
+            'course'        : self.course,
+        }
 
 ######End of file#######
 
