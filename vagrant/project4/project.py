@@ -46,9 +46,9 @@ def genreSelectMenu():
     return render_template('home.html', genres=genres)
 
 #Genre page that displays the selected genre
-@app.route('/<genre_id>/', methods=['GET'])
+@app.route('/<int:genre_id>/', methods=['GET'])
 def exploreGenre(genre_id):
-    selectedGenre = session.query(Genre).filter_by(id=genre_id).one()
+    selectedGenre = session.query(Genre).filter_by(id=genre_id).first()
     gamesInGenre = session.query(Game).filter_by(genreID=selectedGenre.id)
     return render_template('genreExplorer.html', 
                             gamesInGenre=gamesInGenre, 
@@ -60,16 +60,16 @@ def newGenre():
         #return redirect('/loggingIn')
     if request.method == 'POST':
       newGenre = Genre(name = request.form['name'])
-      session.add(newRestaurant)
-      flash('New Restaurant %s Successfully Created' % newRestaurant.name)
+      session.add(newGenre)
+      flash('New Genre %s Successfully Created' % newGenre.name)
       session.commit()
-      return redirect(url_for('showRestaurants'))
+      return redirect(url_for('genreSelectMenu'))
     else:
-      return render_template('newRestaurant.html')
+      return render_template('newGenre.html')
 
 @app.route('/<genre_name>/<int:genre_id>/<int:game_id>/edit')
 def editGameDetails(genre_name, genre_id, game_id):
-    editedGame = session.query(Game).filter_by(id=game_id).one()
+    editedGame = session.query(Game).filter_by(id=game_id).first()
     if request.method=='POST':
         if request.form['VaLuE']:
             editedGame.VaLuE = request.form['VaLuE']
@@ -172,18 +172,18 @@ def createUser(login_session):
                    'email'], picture=login_session['picture'])
     session.add(newUser)
     session.commit()
-    user = session.query(User).filter_by(email=login_session['email']).one()
+    user = session.query(User).filter_by(email=login_session['email']).first()
     return user.id
 
 
 def getUserInfo(user_id):
-    user = session.query(User).filter_by(id=user_id).one()
+    user = session.query(User).filter_by(id=user_id).first()
     return user
 
 
 def getUserID(email):
     try:
-        user = session.query(User).filter_by(email=email).one()
+        user = session.query(User).filter_by(email=email).first()
         return user.id
     except:
         return None 

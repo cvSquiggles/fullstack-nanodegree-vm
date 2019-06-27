@@ -18,8 +18,16 @@ DBSession = sessionmaker(bind=engine)
 # session.rollback()
 session = DBSession()
 
-Genre1 = Genre(name="Real-time Strategy")
-session.add(Genre1)
-session.commit()
+#Genre1 = Genre(name="Role-playing Game")
+#session.add(Genre1)
+#session.commit()
 
-print("Genre created!")
+
+
+Game1 = Game(name="Gears of War", esrb="M",
+ desc="Gory visceral over the top violence, mixed with tactical and surprisingly in depth combat systems.",
+ releaseYear="2006", platforms="Xbox 360, PC", genreID=2, user_id=1)
+print(Game1.desc)
+session.add(Game1)
+session.commit()
+input("Press enter...")
