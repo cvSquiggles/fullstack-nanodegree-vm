@@ -10,8 +10,8 @@
 
 <div>
 
-<p>{{i.name}}</p>
-<a href='{{url_for(''>Edit</a>
+<a href='{{url_for('viewGameDetails', game_id = i.id) }}'>{{i.name}}</p>
+<a href='{{url_for('editGameDetails', game_id = i.id) }}'>Edit</a>
 <a href=''>Delete</a>
 
 </div>

@@ -46,13 +46,22 @@ def genreSelectMenu():
     return render_template('home.html', genres=genres)
 
 #Genre page that displays the selected genre
-@app.route('/<int:genre_id>/', methods=['GET'])
+@app.route('/<int:genre_id>', methods=['GET'])
 def exploreGenre(genre_id):
     selectedGenre = session.query(Genre).filter_by(id=genre_id).first()
     gamesInGenre = session.query(Game).filter_by(genreID=selectedGenre.id)
     return render_template('genreExplorer.html', 
                             gamesInGenre=gamesInGenre, 
                             selectedGenre=selectedGenre)
+
+#Game page displays selected games information
+@app.route('/<int:game_id>/view', methods=['GET'])
+def viewGameDetails(game_id):
+    currentUser = login_session['username']
+    selectedGame = session.query(Game).filter_by(id=game_id).first()
+    return render_template('viewGame.html',
+                            selectedGame = selectedGame,
+                            currentUser = currentUser)
 
 @app.route('/genre/new/', methods=['GET', 'POST'])
 def newGenre():
@@ -67,17 +76,20 @@ def newGenre():
     else:
       return render_template('newGenre.html')
 
-@app.route('/<genre_name>/<int:genre_id>/<int:game_id>/edit')
-def editGameDetails(genre_name, genre_id, game_id):
+@app.route('/<int:game_id>/edit', methods=['GET', 'POST'])
+def editGameDetails(game_id):
     editedGame = session.query(Game).filter_by(id=game_id).first()
     if request.method=='POST':
-        if request.form['VaLuE']:
-            editedGame.VaLuE = request.form['VaLuE']
+        editedGame.name = request.form['name']
+        editedGame.esrb = request.form['esrb']
+        editedGame.releaseYear = request.form['releaseYear']
+        editedGame.platforms = request.form['platforms']
+        editedGame.desc = request.form['desc']
         session.add(editedGame)
         session.commit()
-        return redirect(url_for('exploreGenre', genre_id = genre_id))
+        return redirect(url_for('exploreGenre', genre_id = editedGame.genreID))
     else:
-        return render_template('home.html', )
+        return render_template('editGameDetails.html', editedGame=editedGame)
 
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
